@@ -11,16 +11,6 @@ const password = authentication.client_secret
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json())
 
-// function requestGeek(url) {
-//   request
-//     .get(url)
-//     .on('response', response => {
-//       console.log(response.statusCode)
-//       console.log(response.headers['content-type'])
-//     })
-//   return request
-// }
-// requestGeek('https://api.seatgeek.com/2/events?performers.slug=new-york-mets' + '&client_id=' + username + '&client_secret=' + password)
 function mapEvent(team) {
   const revisedEvent = team.map(item => {
     return {
