@@ -11,26 +11,25 @@ const password = authentication.client_secret
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json())
 
-function mapEvent(team) {
-  const revisedEvent = team.map(item => {
+function filterTeamData(team) {
+  const revisedEvents = team.map(item => {
     return {
-      Matchup: item.title,
-      Date: item.datetime_local,
-      Experience_Rating: item.score,
-      Lowest_Ticket_Price: item.stats.lowest_price,
-      Average_Ticket_Price: item.stats.average_price,
-      Url: item.url
+      matchup: item.title,
+      date: item.datetime_local,
+      experienceRating: item.score,
+      lowestTicketPrice: item.stats.lowest_price,
+      averageTicketPrice: item.stats.average_price,
+      url: item.url
     }
   })
-  return revisedEvent
+  return revisedEvents
 }
 
-app.get('/events/new-york-mets', (req, res) => {
+app.get('/events/:team', (req, res) => {
   request('https://api.seatgeek.com/2/events?performers.slug=new-york-mets' + '&client_id=' + username + '&client_secret=' + password, (error, response, body) => {
     console.log('error:', error)
     console.log('statusCode:', response && response.statusCode)
-    mapEvent(JSON.parse(body).events)
-    res.send(mapEvent(JSON.parse(body).events))
+    res.send(filterTeamData(JSON.parse(body).events))
   })
 })
 
