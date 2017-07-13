@@ -4,10 +4,14 @@ function fetchTeamData(path) {
   fetch(path)
     .then(res => res.json())
     .then(data => {
-      console.log(data)
       renderTable()
+      // renderTableData(data)
       const tableBody = document.createElement('tbody')
-
+      console.log(data)
+      data.sort((a, b) => {
+        return parseFloat(b.experienceRating) - parseFloat(a.experienceRating)
+      })
+      console.log(data)
       data.forEach(object => {
         const tableRow = document.createElement('tr')
         for (let key in object) {
@@ -23,6 +27,21 @@ function fetchTeamData(path) {
       console.log('ERROR', err)
     })
 }
+
+// const tableBody = document.createElement('tbody')
+//
+// function renderTableData(object) {
+//   object.forEach(item => {
+//     const tableRow = document.createElement('tr')
+//     for (let key in item) {
+//       const tableData = document.createElement('td')
+//       tableData.textContent = item[key]
+//       tableRow.appendChild(tableData)
+//     }
+//     tableBody.appendChild(tableRow)
+//   })
+//   table.appendChild(tableBody)
+// }
 
 const mlbTeams = ['Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles', 'Boston Red Sox', 'Chicago Cubs', 'Chicago White Sox', 'Cincinnati Reds', 'Cleveland Indians', 'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins', 'Houston Astros', 'Kansas City Royals', 'Los Angeles Angels of Anaheim', 'Los Angeles Dodgers', 'Milwaukee Brewers', 'Minnesota Twins', 'New York Mets', 'New York Yankees', 'Oakland Athletics', 'Philadelphia Phillies', 'Pittsburgh Pirates', 'St. Louis Cardinals', 'San Diego Padres', 'San Francisco Giants', 'Seattle Mariners', 'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays', 'Washington Nationals']
 
