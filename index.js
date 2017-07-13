@@ -25,8 +25,9 @@ function filterTeamData(team) {
   return revisedEvents
 }
 
-app.get('/events/:team', (req, res) => {
-  request('https://api.seatgeek.com/2/events?performers.slug=new-york-mets' + '&client_id=' + username + '&client_secret=' + password, (error, response, body) => {
+app.get('/events/:id', (req, res) => {
+  const id = req.params.id
+  request('https://api.seatgeek.com/2/events?performers[home_team]' + '.id=' + id + '&client_id=' + username + '&client_secret=' + password, (error, response, body) => {
     console.log('error:', error)
     console.log('statusCode:', response && response.statusCode)
     res.send(filterTeamData(JSON.parse(body).events))
