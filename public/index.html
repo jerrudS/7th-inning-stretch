@@ -2,48 +2,22 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"/>
+    <link rel="stylesheet" href="styles.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta charset="utf-8"/>
     <title>7th Inning Stretch</title>
   </head>
   <body>
-    <div class="view" id="main">
-      <h1>7th Inning Stretch</h1>
-      <h2>A website for MLB game attendees to find the most optimal game experiences.<br/> Just pick a team from the dropdown menu, and your results will be sorted based on the popularity of the game!</h2>
-      <select id="dropdown">
-        <option value="Diamondbacks">Arizona Diamondbacks</option>
-        <option value="Braves">Atlanta Braves</option>
-        <option value="Orioles">Baltimore Orioles</option>
-        <option value="RedSox">Boston Red Sox</option>
-        <option value="Cubs">Chicago Cubs</option>
-        <option value="WhiteSox">Chicago White Sox</option>
-        <option value="Reds">Cincinnati Reds</option>
-        <option value="Indians">Cleveland Indians</option>
-        <option value="Rockies">Colorado Rockies</option>
-        <option value="Tigers">Detroit Tigers</option>
-        <option value="Astros">Houston Astros</option>
-        <option value="Royals">Kansas City Royals</option>
-        <option value="Angels">Los Angeles Angels of Anaheim</option>
-        <option value="Dodgers">Los Angeles Dodgers</option>
-        <option value="Marlins">Miami Marlins</option>
-        <option value="Brewers">Milwaukee Brewers</option>
-        <option value="Twins">Minnesota Twins</option>
-        <option value="Mets">New York Mets</option>
-        <option value="Yankees">New York Yankees</option>
-        <option value="Athletics">Oakland Athletics</option>
-        <option value="Phillies">Philadelphia Phillies</option>
-        <option value="Pirates">Pittsburgh Pirates</option>
-        <option value="Padres">San Diego Padres</option>
-        <option value="Giants">San Francisco Giants</option>
-        <option value="Mariners">Seattle Mariners</option>
-        <option value="Cardinals">St. Louis Cardinals</option>
-        <option value="Rays">Tampa Bay Rays</option>
-        <option value="Rangers">Texas Rangers</option>
-        <option value="Blue Jays">Toronto Blue Jays</option>
-        <option value="Nationals">Washington Nationals</option>
-      </select>
+    <div class="view ui container" id="main">
     </div>
-    <div class="view" id="table">
+    <div class="view hidden ui container" id="table">
     </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.js">
+    </script>
     <script type="text/javascript" src="main.js">
     </script>
   </body>

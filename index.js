@@ -14,11 +14,12 @@ app.use(bodyParser.json())
 function mapEvent(team) {
   const revisedEvent = team.map(item => {
     return {
-      Rating: item.score,
       Matchup: item.title,
       Date: item.datetime_local,
+      Experience_Rating: item.score,
       Lowest_Ticket_Price: item.stats.lowest_price,
-      Average_Ticket_Price: item.stats.average_price
+      Average_Ticket_Price: item.stats.average_price,
+      Url: item.url
     }
   })
   return revisedEvent
