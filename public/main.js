@@ -4,16 +4,16 @@ function fetchTeamData(path) {
   fetch(path)
     .then(res => res.json())
     .then(data => {
+      sortDataRating(data)
       renderTable()
       // renderTableData(data)
+
       const tableBody = document.createElement('tbody')
-      console.log(data)
-      data.sort((a, b) => {
-        return parseFloat(b.experienceRating) - parseFloat(a.experienceRating)
-      })
-      console.log(data)
+
       data.forEach(object => {
         const tableRow = document.createElement('tr')
+        const date = utcToString(object.date)
+        object.date = date
         for (let key in object) {
           const tableData = document.createElement('td')
           tableData.textContent = object[key]
@@ -42,6 +42,40 @@ function fetchTeamData(path) {
 //   })
 //   table.appendChild(tableBody)
 // }
+
+function utcToString(utc) {
+  const utcDate = utc.toString()
+  console.log(utcDate)
+  const date = new Date(utcDate)
+  const newDate = new Date(utcDate).toUTCString()
+  const newerDate = newDate.split(' ').slice(0, 4).join(' ')
+  console.log(newerDate)
+  const twelveDate = formatTime(date)
+  console.log(twelveDate)
+  return newerDate + ', ' + twelveDate
+}
+
+function formatTime(dateObj) {
+  var hour = dateObj.getHours()
+  var minute = dateObj.getMinutes()
+  var amPM = (hour > 11) ? 'pm' : 'am'
+  if (hour > 12) {
+    hour -= 12
+  }
+  else if (hour === 0) {
+    hour = '12'
+  }
+  if (minute < 10) {
+    minute = '0' + minute
+  }
+  return hour + ':' + minute + amPM
+}
+
+function sortDataRating(object) {
+  object.sort((a, b) => {
+    return parseFloat(b.experienceRating) - parseFloat(a.experienceRating)
+  })
+}
 
 const mlbTeams = ['Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles', 'Boston Red Sox', 'Chicago Cubs', 'Chicago White Sox', 'Cincinnati Reds', 'Cleveland Indians', 'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins', 'Houston Astros', 'Kansas City Royals', 'Los Angeles Angels of Anaheim', 'Los Angeles Dodgers', 'Milwaukee Brewers', 'Minnesota Twins', 'New York Mets', 'New York Yankees', 'Oakland Athletics', 'Philadelphia Phillies', 'Pittsburgh Pirates', 'St. Louis Cardinals', 'San Diego Padres', 'San Francisco Giants', 'Seattle Mariners', 'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays', 'Washington Nationals']
 
@@ -101,7 +135,7 @@ function renderMain() {
 }
 
 const table = document.createElement('table')
-const headerName = ['Matchup', 'Date', 'Experience Rating', 'Lowest Ticket Price', 'Average Ticket Price', 'Link to Buy Tickets']
+const headerName = ['Matchup', 'First Pitch', 'Experience Rating', 'Lowest Ticket Price', 'Average Ticket Price', 'Link to Buy Tickets']
 
 function renderTable() {
   const tableDiv = document.querySelector('#table')
