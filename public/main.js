@@ -16,7 +16,15 @@ function fetchTeamData(path) {
         object.date = date
         for (let key in object) {
           const tableData = document.createElement('td')
-          tableData.textContent = object[key]
+          if (key === 'url') {
+            const aTag = document.createElement('a')
+            aTag.href = object.url
+            aTag.textContent = object.url
+            tableData.appendChild(aTag)
+          }
+          else {
+            tableData.textContent = object[key]
+          }
           tableRow.appendChild(tableData)
         }
         tableBody.appendChild(tableRow)
@@ -28,30 +36,12 @@ function fetchTeamData(path) {
     })
 }
 
-// const tableBody = document.createElement('tbody')
-//
-// function renderTableData(object) {
-//   object.forEach(item => {
-//     const tableRow = document.createElement('tr')
-//     for (let key in item) {
-//       const tableData = document.createElement('td')
-//       tableData.textContent = item[key]
-//       tableRow.appendChild(tableData)
-//     }
-//     tableBody.appendChild(tableRow)
-//   })
-//   table.appendChild(tableBody)
-// }
-
 function utcToString(utc) {
   const utcDate = utc.toString()
-  console.log(utcDate)
   const date = new Date(utcDate)
   const newDate = new Date(utcDate).toUTCString()
   const newerDate = newDate.split(' ').slice(0, 4).join(' ')
-  console.log(newerDate)
   const twelveDate = formatTime(date)
-  console.log(twelveDate)
   return newerDate + ', ' + twelveDate
 }
 
@@ -135,7 +125,7 @@ function renderMain() {
 }
 
 const table = document.createElement('table')
-const headerName = ['Matchup', 'First Pitch', 'Experience Rating', 'Lowest Ticket Price', 'Average Ticket Price', 'Link to Buy Tickets']
+const headerName = ['Matchup', 'First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
 
 function renderTable() {
   const tableDiv = document.querySelector('#table')
