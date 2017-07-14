@@ -22,6 +22,14 @@ function fetchTeamData(path) {
             aTag.textContent = object.url
             tableData.appendChild(aTag)
           }
+          else if (key === 'experienceRating') {
+            const rating = (object[key] * 100)
+            const ratingArray = []
+            const stringRating = rating.toString()
+            ratingArray.push(stringRating)
+            const slicedArray = ratingArray[0].slice(0, 5)
+            tableData.textContent = slicedArray
+          }
           else {
             tableData.textContent = object[key]
           }
