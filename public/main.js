@@ -1,77 +1,161 @@
 /* global $ */
 
+let teamData = ''
 function fetchTeamData(path) {
   fetch(path)
     .then(res => res.json())
     .then(data => {
-      sortDataRating(data)
+      teamData = data
+      sortExpRating(teamData)
       renderTable()
-      // renderTableData(data)
-
-      const tableBody = document.createElement('tbody')
-
-      data.forEach(object => {
-        const tableRow = document.createElement('tr')
-        const date = utcToString(object.date)
-        object.date = date
-        for (let key in object) {
-          const tableData = document.createElement('td')
-          if (key === 'url') {
-            const aTag = document.createElement('a')
-            aTag.href = object.url
-            aTag.textContent = object.url
-            tableData.appendChild(aTag)
-          }
-          else if (key === 'experienceRating') {
-            const rating = (object[key] * 100)
-            const ratingArray = []
-            const stringRating = rating.toString()
-            ratingArray.push(stringRating)
-            const slicedArray = ratingArray[0].slice(0, 5)
-            tableData.textContent = slicedArray
-          }
-          else {
-            tableData.textContent = object[key]
-          }
-          tableRow.appendChild(tableData)
-        }
-        tableBody.appendChild(tableRow)
-      })
-      table.appendChild(tableBody)
+      toggleData(teamData, 'lowestTicketPrice')
+      toggleData(teamData, 'date')
+      toggleData(teamData, 'averageTicketPrice')
+      toggleData(teamData, 'experienceRating')
+      // utcToString(teamData)
+      renderTableData(teamData)
     })
     .catch(err => {
       console.log('ERROR', err)
     })
 }
 
-function utcToString(utc) {
-  const utcDate = utc.toString()
-  const date = new Date(utcDate)
-  const newDate = new Date(utcDate).toUTCString()
-  const newerDate = newDate.split(' ').slice(0, 4).join(' ')
-  const twelveDate = formatTime(date)
-  return newerDate + ', ' + twelveDate
+function renderTableData(obj) {
+  const tableBody = document.querySelector('tbody')
+  tableBody.innerHTML = ''
+  obj.forEach(object => {
+    const tableRow = document.createElement('tr')
+    // const date = utcToString(object.date)
+    // object.date = date
+    for (let key in object) {
+      const tableData = document.createElement('td')
+      if (key === 'url') {
+        const aTag = document.createElement('a')
+        aTag.href = object.url
+        aTag.textContent = object.url
+        tableData.appendChild(aTag)
+      }
+      else if (key === 'experienceRating') {
+        const rating = (object[key] * 100)
+        const ratingArray = []
+        const stringRating = rating.toString()
+        ratingArray.push(stringRating)
+        const slicedArray = ratingArray[0].slice(0, 5)
+        tableData.textContent = slicedArray
+      }
+      else {
+        tableData.textContent = object[key]
+      }
+      tableRow.appendChild(tableData)
+    }
+    tableBody.appendChild(tableRow)
+  })
+  table.appendChild(tableBody)
 }
 
-function formatTime(dateObj) {
-  var hour = dateObj.getHours()
-  var minute = dateObj.getMinutes()
-  var amPM = (hour > 11) ? 'pm' : 'am'
-  if (hour > 12) {
-    hour -= 12
-  }
-  else if (hour === 0) {
-    hour = '12'
-  }
-  if (minute < 10) {
-    minute = '0' + minute
-  }
-  return hour + ':' + minute + amPM
-}
+// function parseDate(object) {
+//   object.forEach(item => {
+//     const parsedDate = Date.parse(item.date)
+//     item.date = parsedDate
+//     return parsedDate
+//   })
+// }
 
-function sortDataRating(object) {
+// function utcToString(object) {
+//   object.forEach(item => {
+//     const utcDate = (item.date).toString()
+//     const date = new Date(utcDate)
+//     const newDate = new Date(utcDate).toUTCString()
+//     const newerDate = newDate.split(' ').slice(0, 4).join(' ')
+//     const twelveDate = formatTime(date)
+//     item.date = newerDate + '; ' + twelveDate
+//     return newerDate + '; ' + twelveDate
+//   })
+// }
+
+// function stringToUtc(object) {
+//   object.forEach(item => {
+//     const stringDate = item.date
+//     console.log(stringDate)
+//     const splitDate = stringDate.split(' ').slice(0, 4).join(' ')
+//     console.log(splitDate)
+//     const newString = Date.parse(splitDate)
+//     console.log(newString)
+//     item.date = newString
+//     return newString
+//   })
+// }
+
+// function formatTime(dateObj) {
+//   var hour = dateObj.getHours()
+//   var minute = dateObj.getMinutes()
+//   var amPM = (hour > 11) ? 'pm' : 'am'
+//   if (hour > 12) {
+//     hour -= 12
+//   }
+//   else if (hour === 0) {
+//     hour = '12'
+//   }
+//   if (minute < 10) {
+//     minute = '0' + minute
+//   }
+//   return hour + ':' + minute + amPM
+// }
+
+function sortExpRating(object) {
   object.sort((a, b) => {
     return parseFloat(b.experienceRating) - parseFloat(a.experienceRating)
+  })
+}
+
+function sortDataDescending(object, key) {
+  object.sort((a, b) => {
+    return parseFloat(b[key]) - parseFloat(a[key])
+  })
+}
+
+function sortDataAscending(object, key) {
+  object.sort((a, b) => {
+    return parseFloat(a[key]) - parseFloat(b[key])
+  })
+}
+
+function sortDateAscending(object) {
+  object.sort((a, b) => {
+    return new Date(a.date) - new Date(b.date)
+  })
+}
+
+function sortDateDescending(object) {
+  object.sort((a, b) => {
+    return new Date(b.date) - new Date(a.date)
+  })
+}
+
+function toggleData(object, key) {
+  const header = document.querySelector('thead')
+  let clickCount = 0
+  header.addEventListener('click', (event) => {
+    const $targetDiv = event.target
+    const dataAttr = $targetDiv.getAttribute('data-key')
+    if (dataAttr === key & clickCount % 2 === 0) {
+      sortDataAscending(object, key)
+      renderTableData(teamData)
+      clickCount += 1
+    }
+    else if (dataAttr === key & clickCount % 2 !== 0) {
+      sortDataDescending(object, key)
+      renderTableData(teamData)
+      clickCount += 1
+    }
+    else if (dataAttr === 'date' & clickCount % 2 === 0) {
+      sortDateAscending(object)
+      clickCount += 1
+    }
+    else if (dataAttr === 'date' & clickCount % 2 !== 0) {
+      sortDateDescending(object)
+      clickCount += 1
+    }
   })
 }
 
@@ -133,13 +217,13 @@ function renderMain() {
 }
 
 const table = document.createElement('table')
-const headerName = ['Matchup', 'First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
+const headerName = ['Matchup', 'Date; Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
 
 function renderTable() {
+  const tableBody = document.createElement('tbody')
   const tableDiv = document.querySelector('#table')
   const head = document.createElement('thead')
   const tableRow = document.createElement('tr')
-
   headerName.forEach(item => {
     const header = document.createElement('th')
     header.textContent = ''
@@ -147,13 +231,31 @@ function renderTable() {
       tableRow.appendChild(header)
     }
     header.textContent = item
+    if (header.textContent === 'Date; Time of First Pitch') {
+      header.setAttribute('id', 'date')
+      header.setAttribute('data-key', 'date')
+    }
+    else if (header.textContent === 'Lowest Ticket Price ($)') {
+      header.setAttribute('id', 'lowestTicketPrice')
+      header.setAttribute('data-key', 'lowestTicketPrice')
+    }
+    else if (header.textContent === 'Average Ticket Price ($)') {
+      header.setAttribute('id', 'averageTicketPrice')
+      header.setAttribute('data-key', 'averageTicketPrice')
+    }
+    else if (header.textContent === 'Experience Rating') {
+      header.setAttribute('id', 'experienceRating')
+      header.setAttribute('data-key', 'experienceRating')
+    }
   })
 
   table.setAttribute('class', 'ui celled table')
 
   table.innerHTML = ''
+
   tableDiv.appendChild(table)
   table.appendChild(head)
+  table.appendChild(tableBody)
   head.appendChild(tableRow)
 }
 

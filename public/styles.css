@@ -20,3 +20,11 @@ body {
 .header {
   text-align: center;
 }
+
+#date:hover,
+#experienceRating:hover,
+#lowestTicketPrice:hover,
+#averageTicketPrice:hover {
+  cursor: pointer;
+  font-size: 15px;
+}
