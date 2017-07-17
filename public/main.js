@@ -19,11 +19,6 @@ function fetchTeamData(path) {
     })
 }
 
-// function createATag() {
-//   const aTag = document.createElement('a')
-//
-// }
-
 function toSlicedArray(number) {
   const stringArray = []
   const stringNumber = number.toString()
