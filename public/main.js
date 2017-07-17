@@ -51,36 +51,6 @@ function createATagButton(url) {
   return aTag
 }
 
-function renderTableData(teamArray) {
-  const tableBody = document.querySelector('tbody')
-  tableBody.innerHTML = ''
-  teamArray.forEach(object => {
-    const tableRow = document.createElement('tr')
-    for (let key in object) {
-      const tableData = document.createElement('td')
-      if (key === 'url') {
-        const aTag = createATagButton(object.url)
-        tableData.appendChild(aTag)
-      }
-      else if (key === 'experienceRating') {
-        const rating = (object[key] * 100)
-        const slicedArray = toSlicedArray(rating)
-        tableData.textContent = slicedArray
-      }
-      else if (key === 'date') {
-        const newestDate = toUtcStringSliced(object.date)
-        tableData.textContent = newestDate
-      }
-      else {
-        tableData.textContent = object[key]
-      }
-      tableRow.appendChild(tableData)
-    }
-    tableBody.appendChild(tableRow)
-  })
-  table.appendChild(tableBody)
-}
-
 function formatTime(dateObj) {
   var hour = dateObj.getHours()
   var minute = dateObj.getMinutes()
@@ -125,6 +95,36 @@ function sortDateDescending(object) {
   object.sort((a, b) => {
     return new Date(b.date) - new Date(a.date)
   })
+}
+
+function renderTableData(teamArray) {
+  const tableBody = document.querySelector('tbody')
+  tableBody.innerHTML = ''
+  teamArray.forEach(object => {
+    const tableRow = document.createElement('tr')
+    for (let key in object) {
+      const tableData = document.createElement('td')
+      if (key === 'url') {
+        const aTag = createATagButton(object.url)
+        tableData.appendChild(aTag)
+      }
+      else if (key === 'experienceRating') {
+        const rating = (object[key] * 100)
+        const slicedArray = toSlicedArray(rating)
+        tableData.textContent = slicedArray
+      }
+      else if (key === 'date') {
+        const newestDate = toUtcStringSliced(object.date)
+        tableData.textContent = newestDate
+      }
+      else {
+        tableData.textContent = object[key]
+      }
+      tableRow.appendChild(tableData)
+    }
+    tableBody.appendChild(tableRow)
+  })
+  table.appendChild(tableBody)
 }
 
 function toggleData(object, key) {
