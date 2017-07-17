@@ -12,7 +12,6 @@ function fetchTeamData(path) {
       toggleData(teamData, 'date')
       toggleData(teamData, 'averageTicketPrice')
       toggleData(teamData, 'experienceRating')
-      // utcToString(teamData)
       renderTableData(teamData)
     })
     .catch(err => {
@@ -20,36 +19,57 @@ function fetchTeamData(path) {
     })
 }
 
-function renderTableData(obj) {
+// function createATag() {
+//   const aTag = document.createElement('a')
+//
+// }
+
+function toSlicedArray(number) {
+  const stringArray = []
+  const stringNumber = number.toString()
+  stringArray.push(stringNumber)
+  const slicedArray = stringArray[0].slice(0, 5)
+  return slicedArray
+}
+
+function toUtcStringSliced(dateObj) {
+  const utcDate = (dateObj).toString()
+  const date = new Date(utcDate)
+  const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const newerDate = newDate.toUTCString()
+  const newestDate = newerDate.split(' ').slice(0, 4).join(' ')
+  const twelveDate = formatTime(date)
+  const utcStringSliced = newestDate + '; ' + twelveDate
+  return utcStringSliced
+}
+
+function createATagButton(url) {
+  const aTag = document.createElement('a')
+  aTag.setAttribute('class', 'ui positive button')
+  aTag.href = url
+  aTag.textContent = 'Buy Tickets'
+  return aTag
+}
+
+function renderTableData(teamArray) {
   const tableBody = document.querySelector('tbody')
   tableBody.innerHTML = ''
-  obj.forEach(object => {
+  teamArray.forEach(object => {
     const tableRow = document.createElement('tr')
     for (let key in object) {
       const tableData = document.createElement('td')
       if (key === 'url') {
-        const aTag = document.createElement('a')
-        aTag.setAttribute('class', 'ui positive button')
-        aTag.href = object.url
-        aTag.textContent = 'Buy Tickets'
+        const aTag = createATagButton(object.url)
         tableData.appendChild(aTag)
       }
       else if (key === 'experienceRating') {
         const rating = (object[key] * 100)
-        const ratingArray = []
-        const stringRating = rating.toString()
-        ratingArray.push(stringRating)
-        const slicedArray = ratingArray[0].slice(0, 5)
+        const slicedArray = toSlicedArray(rating)
         tableData.textContent = slicedArray
       }
       else if (key === 'date') {
-        const utcDate = (object.date).toString()
-        const date = new Date(utcDate)
-        const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-        const newerDate = newDate.toUTCString()
-        const newestDate = newerDate.split(' ').slice(0, 4).join(' ')
-        const twelveDate = formatTime(date)
-        tableData.textContent = newestDate + '; ' + twelveDate
+        const newestDate = toUtcStringSliced(object.date)
+        tableData.textContent = newestDate
       }
       else {
         tableData.textContent = object[key]
@@ -149,7 +169,7 @@ function renderMain() {
   h3.setAttribute('class', 'ui header')
 
   h1.textContent = '7th Inning Stretch'
-  h3.textContent = 'A website for MLB game attendees to find the most optimal game experiences. Just pick a team from the dropdown menu, and your results will be sorted based on the popularity of the game!'
+  h3.textContent = 'A website for MLB game attendees to find the most optimal game experiences. Just pick a team from the dropdown menu, and your results will be sorted based on "Experience Rating!"'
 
   mainDiv.appendChild(h1)
   mainDiv.appendChild(h3)
