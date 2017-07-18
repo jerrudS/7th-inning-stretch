@@ -1,27 +1,110 @@
 /* global $ */
 
+let games = []
+
 function fetchTeamData(path) {
   fetch(path)
     .then(res => res.json())
     .then(data => {
-      console.log(data)
+      games = data
+      sortData(games, 'experienceRating')
       renderTable()
-      const tableBody = document.createElement('tbody')
-
-      data.forEach(object => {
-        const tableRow = document.createElement('tr')
-        for (let key in object) {
-          const tableData = document.createElement('td')
-          tableData.textContent = object[key]
-          tableRow.appendChild(tableData)
-        }
-        tableBody.appendChild(tableRow)
-      })
-      table.appendChild(tableBody)
+      renderTableData(games)
     })
     .catch(err => {
       console.log('ERROR', err)
     })
+}
+
+function toSlicedArray(number) {
+  const stringArray = []
+  const stringNumber = number.toString()
+  stringArray.push(stringNumber)
+  const slicedArray = stringArray[0].slice(0, 5)
+  return slicedArray
+}
+
+function toUtcStringSliced(dateObj) {
+  const utcDate = (dateObj).toString()
+  const date = new Date(utcDate)
+  const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const newerDate = newDate.toUTCString()
+  const newestDate = newerDate.split(' ').slice(0, 4).join(' ')
+  const twelveDate = formatTime(date)
+  const utcStringSliced = newestDate + '; ' + twelveDate
+  return utcStringSliced
+}
+
+function createATagButton(url) {
+  const aTag = document.createElement('a')
+  aTag.setAttribute('class', 'ui positive button')
+  aTag.href = url
+  aTag.textContent = 'Buy Tickets'
+  return aTag
+}
+
+function formatTime(dateObj) {
+  var hour = dateObj.getHours()
+  var minute = dateObj.getMinutes()
+  var amPM = (hour > 11) ? 'pm' : 'am'
+  if (hour > 12) {
+    hour -= 12
+  }
+  else if (hour === 0) {
+    hour = '12'
+  }
+  if (minute < 10) {
+    minute = '0' + minute
+  }
+  return hour + ':' + minute + amPM
+}
+
+function sortData(object, key, isAscending) {
+  object.sort((a, b) => {
+    if (isAscending) {
+      return parseFloat(a[key]) - parseFloat(b[key])
+    }
+    return parseFloat(b[key]) - parseFloat(a[key])
+  })
+}
+
+function sortDate(object, isAscending) {
+  object.sort((a, b) => {
+    if (isAscending) {
+      return new Date(a.date) - new Date(b.date)
+    }
+    return new Date(b.date) - new Date(a.date)
+  })
+}
+
+function renderTableData(games) {
+  const tableBody = document.querySelector('tbody')
+  tableBody.innerHTML = ''
+  games.forEach(object => {
+    const tableRow = document.createElement('tr')
+    for (let key in object) {
+      const tableData = document.createElement('td')
+      if (key === 'url') {
+        const aTag = createATagButton(object.url)
+        tableData.appendChild(aTag)
+      }
+      else if (key === 'experienceRating') {
+        const rating = (object[key] * 100)
+        const slicedArray = toSlicedArray(rating)
+        tableData.textContent = slicedArray
+      }
+      else if (key === 'date') {
+        const newestDate = toUtcStringSliced(object.date)
+        tableData.textContent = newestDate
+      }
+      else {
+        tableData.textContent = object[key]
+      }
+      tableRow.appendChild(tableData)
+    }
+    tableBody.appendChild(tableRow)
+  })
+  table.appendChild(tableBody)
 }
 
 const mlbTeams = ['Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles', 'Boston Red Sox', 'Chicago Cubs', 'Chicago White Sox', 'Cincinnati Reds', 'Cleveland Indians', 'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins', 'Houston Astros', 'Kansas City Royals', 'Los Angeles Angels of Anaheim', 'Los Angeles Dodgers', 'Milwaukee Brewers', 'Minnesota Twins', 'New York Mets', 'New York Yankees', 'Oakland Athletics', 'Philadelphia Phillies', 'Pittsburgh Pirates', 'St. Louis Cardinals', 'San Diego Padres', 'San Francisco Giants', 'Seattle Mariners', 'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays', 'Washington Nationals']
@@ -37,7 +120,7 @@ function renderMain() {
   h3.setAttribute('class', 'ui header')
 
   h1.textContent = '7th Inning Stretch'
-  h3.textContent = 'A website for MLB game attendees to find the most optimal game experiences. Just pick a team from the dropdown menu, and your results will be sorted based on the popularity of the game!'
+  h3.textContent = 'A website for MLB game attendees to find the most optimal game experiences. Just pick a team from the dropdown menu, and your results will be sorted based on "Experience Rating!"'
 
   mainDiv.appendChild(h1)
   mainDiv.appendChild(h3)
@@ -82,13 +165,13 @@ function renderMain() {
 }
 
 const table = document.createElement('table')
-const headerName = ['Matchup', 'Date', 'Experience Rating', 'Lowest Ticket Price', 'Average Ticket Price', 'Link to Buy Tickets']
+const headerName = ['Matchup', 'Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
 
 function renderTable() {
+  const tableBody = document.createElement('tbody')
   const tableDiv = document.querySelector('#table')
   const head = document.createElement('thead')
   const tableRow = document.createElement('tr')
-
   headerName.forEach(item => {
     const header = document.createElement('th')
     header.textContent = ''
@@ -96,14 +179,49 @@ function renderTable() {
       tableRow.appendChild(header)
     }
     header.textContent = item
+    if (header.textContent === 'Time of First Pitch') {
+      header.setAttribute('id', 'date')
+      header.setAttribute('data-key', 'date')
+    }
+    else if (header.textContent === 'Lowest Ticket Price ($)') {
+      header.setAttribute('id', 'lowestTicketPrice')
+      header.setAttribute('data-key', 'lowestTicketPrice')
+    }
+    else if (header.textContent === 'Average Ticket Price ($)') {
+      header.setAttribute('id', 'averageTicketPrice')
+      header.setAttribute('data-key', 'averageTicketPrice')
+    }
+    else if (header.textContent === 'Experience Rating') {
+      header.setAttribute('id', 'experienceRating')
+      header.setAttribute('data-key', 'experienceRating')
+    }
   })
 
   table.setAttribute('class', 'ui celled table')
 
   table.innerHTML = ''
+
   tableDiv.appendChild(table)
   table.appendChild(head)
+  table.appendChild(tableBody)
   head.appendChild(tableRow)
+
+  const keysArray = ['date', 'experienceRating', 'lowestTicketPrice', 'averageTicketPrice']
+  head.addEventListener('click', (event) => {
+    const $targetDiv = event.target
+    const dataAttr = $targetDiv.getAttribute('data-key')
+    const isAscending = $targetDiv.classList.contains('ascending')
+    $targetDiv.classList.toggle('ascending')
+    keysArray.forEach(key => {
+      if (dataAttr === key) {
+        sortData(games, key, isAscending)
+      }
+      else if (dataAttr === 'date') {
+        sortDate(games, isAscending)
+      }
+    })
+    renderTableData(games)
+  })
 }
 
 renderMain()

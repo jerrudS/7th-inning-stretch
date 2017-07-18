@@ -6,7 +6,11 @@
 
 body {
   margin: 20px;
-  background: url('weather.png') repeat;
+  background: url('phil-goodwin-97782.jpg') no-repeat fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 #main {
@@ -19,4 +23,12 @@ body {
 
 .header {
   text-align: center;
+}
+
+#date:hover,
+#experienceRating:hover,
+#lowestTicketPrice:hover,
+#averageTicketPrice:hover {
+  cursor: pointer;
+  font-size: 15px;
 }
