@@ -82,6 +82,22 @@ function renderTableData(games) {
   tableBody.innerHTML = ''
   games.forEach(object => {
     const tableRow = document.createElement('tr')
+    const tableCol = document.createElement('td')
+    const checkDiv = document.createElement('div')
+    const inputDiv = document.createElement('input')
+    const label = document.createElement('label')
+
+    tableCol.setAttribute('class', 'collapsing')
+    checkDiv.setAttribute('class', 'ui toggle checkbox')
+    inputDiv.setAttribute('type', 'checkbox')
+    inputDiv.setAttribute('name', 'public')
+
+    tableCol.appendChild(checkDiv)
+    checkDiv.appendChild(inputDiv)
+    checkDiv.appendChild(label)
+    tableRow.appendChild(tableCol)
+    console.log(tableCol)
+
     for (let key in object) {
       const tableData = document.createElement('td')
       if (key === 'url') {
@@ -165,7 +181,7 @@ function renderMain() {
 }
 
 const table = document.createElement('table')
-const headerName = ['Matchup', 'Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
+const headerName = ['Save', 'Matchup', 'Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
 
 function renderTable() {
   const tableBody = document.createElement('tbody')
@@ -175,7 +191,7 @@ function renderTable() {
   headerName.forEach(item => {
     const header = document.createElement('th')
     header.textContent = ''
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 7; i++) {
       tableRow.appendChild(header)
     }
     header.textContent = item
@@ -194,6 +210,9 @@ function renderTable() {
     else if (header.textContent === 'Experience Rating') {
       header.setAttribute('id', 'experienceRating')
       header.setAttribute('data-key', 'experienceRating')
+    }
+    else if (header.textContent === 'Starred') {
+      header.setAttribute('id', 'checked')
     }
   })
 
