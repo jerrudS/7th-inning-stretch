@@ -4,6 +4,10 @@ const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
+const knex = require('knex')({
+  dialect: 'pg',
+  connection: 'postgres://localhost:5432/stretch'
+})
 
 const username = authentication.client_id
 const password = authentication.client_secret
@@ -39,8 +43,29 @@ app.post('/events/:id', (req, res) => {
   request('https://api.seatgeek.com/2/events?performers[home_team]' + '.id=' + id + '&client_id=' + username + '&client_secret=' + password, (error, response, body) => {
     console.log('error:', error)
     console.log('statusCode:', response && response.statusCode)
-    res.send(filterTeamData(JSON.parse(body).events))
-    console.log('complete')
+    const newBody = filterTeamData(JSON.parse(body).events)
+    console.log(newBody[0].matchup)
+
+    newBody.forEach(game => {
+      const query = knex
+        .insert({
+          matchup: game.matchup,
+          time_of_first_pitch: game.date,
+          experience_rating: game.experienceRating,
+          lowest_ticket_price: game.lowestTicketPrice,
+          average_ticket_price: game.averageTicketPrice,
+          link_to_buy_tickets: game.url
+        })
+        .into('games')
+        .returning('*')
+
+      console.log(query.toString())
+
+      query
+        .then(() => {
+          console.log('done!')
+        })
+    })
   })
 })
 
