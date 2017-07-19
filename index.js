@@ -34,6 +34,16 @@ app.get('/events/:id', (req, res) => {
   })
 })
 
+app.post('/events/:id', (req, res) => {
+  const id = req.params.id
+  request('https://api.seatgeek.com/2/events?performers[home_team]' + '.id=' + id + '&client_id=' + username + '&client_secret=' + password, (error, response, body) => {
+    console.log('error:', error)
+    console.log('statusCode:', response && response.statusCode)
+    res.send(filterTeamData(JSON.parse(body).events))
+    console.log('complete')
+  })
+})
+
 app.listen(3004, () => {
   console.log('Listening on port 3004')
 })
