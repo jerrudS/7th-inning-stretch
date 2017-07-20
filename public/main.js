@@ -113,6 +113,13 @@ function clickEventFavorite(element) {
   })
 }
 
+function mainFavorite() {
+  var $main = document.querySelector('#table')
+  var $table = document.querySelector('#main')
+  $main.classList.add('hidden')
+  $table.classList.add('hidden')
+}
+
 function renderTableData(games) {
   const tableBody = document.querySelector('tbody')
   tableBody.innerHTML = ''
@@ -177,12 +184,15 @@ function renderMain() {
   const mainDiv = document.querySelector('#main')
   const h1 = document.createElement('h1')
   const h3 = document.createElement('h3')
+  const button = document.createElement('button')
 
   h1.setAttribute('class', 'ui header')
   h3.setAttribute('class', 'ui header')
+  button.setAttribute('class', 'ui right floated button')
 
   h1.textContent = '7th Inning Stretch'
   h3.textContent = 'A website for MLB game attendees to find the most optimal game experiences. Just pick a team from the dropdown menu, and your results will be sorted based on "Experience Rating!"'
+  button.textContent = 'My Saved Games'
 
   mainDiv.appendChild(h1)
   mainDiv.appendChild(h3)
@@ -300,3 +310,5 @@ dropdown.addEventListener('click', (event) => {
     fetchTeamData('/events/' + id)
   }
 })
+
+mainFavorite()
