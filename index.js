@@ -4,10 +4,7 @@ const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
-const knex = require('knex')({
-  dialect: 'pg',
-  connection: 'postgres://localhost:5432/stretch'
-})
+const { insertGame } = require('./database')
 
 const username = authentication.client_id
 const password = authentication.client_secret
@@ -40,19 +37,8 @@ app.get('/events/:id', (req, res) => {
 
 app.post('/favorites', (req, res) => {
   const game = req.body
-  const query = knex
-    .insert({
-      matchup: game.matchup,
-      time_of_first_pitch: game.date,
-      experience_rating: game.experienceRating,
-      lowest_ticket_price: game.lowestTicketPrice,
-      average_ticket_price: game.averageTicketPrice,
-      link_to_buy_tickets: game.url
-    })
-    .into('games')
-    .returning('*')
 
-  query
+  insertGame(game)
     .then((data) => {
       res.status(201).json(data)
     })

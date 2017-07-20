@@ -24,9 +24,6 @@ function addFavorite(game) {
     },
     body: JSON.stringify(game)
   })
-    .then(data => {
-      console.log(data)
-    })
     .catch(err => {
       console.log('ERROR', err)
     })
@@ -147,7 +144,6 @@ function renderTableData(games) {
   const tbody = document.querySelector('tbody')
   tbody.addEventListener('click', (event) => {
     const $targetDiv = event.target
-    console.log($targetDiv)
     const id = $targetDiv.getAttribute('data-id')
     if (id) {
       const game =
@@ -159,7 +155,6 @@ function renderTableData(games) {
           averageTicketPrice: games[id].averageTicketPrice,
           linkToBuyTickets: games[id].url
         }
-      console.log(game)
       addFavorite(game)
     }
   })
