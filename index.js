@@ -38,35 +38,24 @@ app.get('/events/:id', (req, res) => {
   })
 })
 
-app.post('/events/:id', (req, res) => {
-  const id = req.params.id
-  request('https://api.seatgeek.com/2/events?performers[home_team]' + '.id=' + id + '&client_id=' + username + '&client_secret=' + password, (error, response, body) => {
-    console.log('error:', error)
-    console.log('statusCode:', response && response.statusCode)
-    const newBody = filterTeamData(JSON.parse(body).events)
-    console.log(newBody[0].matchup)
-
-    newBody.forEach(game => {
-      const query = knex
-        .insert({
-          matchup: game.matchup,
-          time_of_first_pitch: game.date,
-          experience_rating: game.experienceRating,
-          lowest_ticket_price: game.lowestTicketPrice,
-          average_ticket_price: game.averageTicketPrice,
-          link_to_buy_tickets: game.url
-        })
-        .into('games')
-        .returning('*')
-
-      console.log(query.toString())
-
-      query
-        .then(() => {
-          console.log('done!')
-        })
+app.post('/favorites', (req, res) => {
+  const game = req.body
+  const query = knex
+    .insert({
+      matchup: game.matchup,
+      time_of_first_pitch: game.date,
+      experience_rating: game.experienceRating,
+      lowest_ticket_price: game.lowestTicketPrice,
+      average_ticket_price: game.averageTicketPrice,
+      link_to_buy_tickets: game.url
     })
-  })
+    .into('games')
+    .returning('*')
+
+  query
+    .then((data) => {
+      res.status(201).json(data)
+    })
 })
 
 app.listen(3004, () => {

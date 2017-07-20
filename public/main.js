@@ -16,6 +16,22 @@ function fetchTeamData(path) {
     })
 }
 
+function addFavorite(game) {
+  fetch('/favorites', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(game)
+  })
+    .then(data => {
+      console.log(data)
+    })
+    .catch(err => {
+      console.log('ERROR', err)
+    })
+}
+
 function toSlicedArray(number) {
   const stringArray = []
   const stringNumber = number.toString()
@@ -96,7 +112,6 @@ function renderTableData(games) {
     checkDiv.appendChild(inputDiv)
     checkDiv.appendChild(label)
     tableRow.appendChild(tableCol)
-    console.log(tableCol)
 
     for (let key in object) {
       const tableData = document.createElement('td')
@@ -120,7 +135,34 @@ function renderTableData(games) {
     }
     tableBody.appendChild(tableRow)
   })
+  const dataId = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  let number = 0
+  const checkDiv = document.querySelectorAll('input[type="checkbox"]')
+  checkDiv.forEach(item => {
+    item.setAttribute('data-id', dataId[number])
+    number += 1
+  })
   table.appendChild(tableBody)
+
+  const tbody = document.querySelector('tbody')
+  tbody.addEventListener('click', (event) => {
+    const $targetDiv = event.target
+    console.log($targetDiv)
+    const id = $targetDiv.getAttribute('data-id')
+    if (id) {
+      const game =
+        {
+          matchup: games[id].matchup,
+          date: games[id].date,
+          experienceRating: games[id].experienceRating,
+          lowestTicketPrice: games[id].lowestTicketPrice,
+          averageTicketPrice: games[id].averageTicketPrice,
+          linkToBuyTickets: games[id].url
+        }
+      console.log(game)
+      addFavorite(game)
+    }
+  })
 }
 
 const mlbTeams = ['Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles', 'Boston Red Sox', 'Chicago Cubs', 'Chicago White Sox', 'Cincinnati Reds', 'Cleveland Indians', 'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins', 'Houston Astros', 'Kansas City Royals', 'Los Angeles Angels of Anaheim', 'Los Angeles Dodgers', 'Milwaukee Brewers', 'Minnesota Twins', 'New York Mets', 'New York Yankees', 'Oakland Athletics', 'Philadelphia Phillies', 'Pittsburgh Pirates', 'St. Louis Cardinals', 'San Diego Padres', 'San Francisco Giants', 'Seattle Mariners', 'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays', 'Washington Nationals']
