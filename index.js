@@ -4,6 +4,7 @@ const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
+const { insertGame } = require('./database')
 
 const username = authentication.client_id
 const password = authentication.client_secret
@@ -32,6 +33,15 @@ app.get('/events/:id', (req, res) => {
     console.log('statusCode:', response && response.statusCode)
     res.send(filterTeamData(JSON.parse(body).events))
   })
+})
+
+app.post('/favorites', (req, res) => {
+  const game = req.body
+
+  insertGame(game)
+    .then((data) => {
+      res.status(201).json(data)
+    })
 })
 
 app.listen(3004, () => {

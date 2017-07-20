@@ -16,6 +16,19 @@ function fetchTeamData(path) {
     })
 }
 
+function addFavorite(game) {
+  fetch('/favorites', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(game)
+  })
+  .catch(err => {
+    console.log('ERROR', err)
+  })
+}
+
 function toSlicedArray(number) {
   const stringArray = []
   const stringNumber = number.toString()
@@ -77,11 +90,49 @@ function sortDate(object, isAscending) {
   })
 }
 
+function setAttribute(item, key, arr) {
+  item.setAttribute(key, arr)
+}
+
+function clickEventFavorite(element) {
+  element.addEventListener('click', (event) => {
+    const $targetDiv = event.target
+    const id = $targetDiv.getAttribute('data-id')
+    if (id) {
+      const game =
+        {
+          matchup: games[id].matchup,
+          date: games[id].date,
+          experienceRating: games[id].experienceRating,
+          lowestTicketPrice: games[id].lowestTicketPrice,
+          averageTicketPrice: games[id].averageTicketPrice,
+          linkToBuyTickets: games[id].url
+        }
+      addFavorite(game)
+    }
+  })
+}
+
 function renderTableData(games) {
   const tableBody = document.querySelector('tbody')
   tableBody.innerHTML = ''
   games.forEach(object => {
     const tableRow = document.createElement('tr')
+    const tableCol = document.createElement('td')
+    const checkDiv = document.createElement('div')
+    const inputDiv = document.createElement('input')
+    const label = document.createElement('label')
+
+    tableCol.setAttribute('class', 'collapsing')
+    checkDiv.setAttribute('class', 'ui toggle checkbox')
+    inputDiv.setAttribute('type', 'checkbox')
+    inputDiv.setAttribute('name', 'public')
+
+    tableCol.appendChild(checkDiv)
+    checkDiv.appendChild(inputDiv)
+    checkDiv.appendChild(label)
+    tableRow.appendChild(tableCol)
+
     for (let key in object) {
       const tableData = document.createElement('td')
       if (key === 'url') {
@@ -104,7 +155,18 @@ function renderTableData(games) {
     }
     tableBody.appendChild(tableRow)
   })
+
+  const dataId = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  let number = 0
+  const checkDiv = document.querySelectorAll('input[type="checkbox"]')
+  checkDiv.forEach(item => {
+    setAttribute(item, 'data-id', dataId[number])
+    number += 1
+  })
   table.appendChild(tableBody)
+
+  const tbody = document.querySelector('tbody')
+  clickEventFavorite(tbody)
 }
 
 const mlbTeams = ['Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles', 'Boston Red Sox', 'Chicago Cubs', 'Chicago White Sox', 'Cincinnati Reds', 'Cleveland Indians', 'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins', 'Houston Astros', 'Kansas City Royals', 'Los Angeles Angels of Anaheim', 'Los Angeles Dodgers', 'Milwaukee Brewers', 'Minnesota Twins', 'New York Mets', 'New York Yankees', 'Oakland Athletics', 'Philadelphia Phillies', 'Pittsburgh Pirates', 'St. Louis Cardinals', 'San Diego Padres', 'San Francisco Giants', 'Seattle Mariners', 'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays', 'Washington Nationals']
@@ -165,7 +227,7 @@ function renderMain() {
 }
 
 const table = document.createElement('table')
-const headerName = ['Matchup', 'Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
+const headerName = ['Save', 'Matchup', 'Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
 
 function renderTable() {
   const tableBody = document.createElement('tbody')
@@ -175,7 +237,7 @@ function renderTable() {
   headerName.forEach(item => {
     const header = document.createElement('th')
     header.textContent = ''
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 7; i++) {
       tableRow.appendChild(header)
     }
     header.textContent = item
@@ -194,6 +256,9 @@ function renderTable() {
     else if (header.textContent === 'Experience Rating') {
       header.setAttribute('id', 'experienceRating')
       header.setAttribute('data-key', 'experienceRating')
+    }
+    else if (header.textContent === 'Starred') {
+      header.setAttribute('id', 'checked')
     }
   })
 
