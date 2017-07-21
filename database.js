@@ -17,6 +17,12 @@ function insertGame(game) {
     .returning('*')
 }
 
+function selectGames() {
+  return knex
+    .select('*').from('games')
+}
+
 module.exports = {
-  insertGame: insertGame
+  insertGame: insertGame,
+  selectGames: selectGames
 }
