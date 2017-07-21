@@ -32,3 +32,13 @@ body {
   cursor: pointer;
   font-size: 15px;
 }
+
+.hidden {
+  display: none;
+}
+
+.ui.black.button {
+  position: absolute;
+  top: 18px;
+  right: 160px;
+}

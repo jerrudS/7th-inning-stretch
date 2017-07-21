@@ -4,7 +4,7 @@ const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
-const { insertGame } = require('./database')
+const { insertGame, selectGames } = require('./database')
 
 const username = authentication.client_id
 const password = authentication.client_secret
@@ -26,6 +26,20 @@ function filterTeamData(team) {
   return revisedEvents
 }
 
+function filterFavorites(game) {
+  const revisedGame = game.map(item => {
+    return {
+      matchup: item.matchup,
+      date: item.time_of_first_pitch,
+      experienceRating: item.experience_rating,
+      lowestTicketPrice: item.lowest_ticket_price,
+      averageTicketPrice: item.average_ticket_price,
+      url: item.link_to_buy_tickets
+    }
+  })
+  return revisedGame
+}
+
 app.get('/events/:id', (req, res) => {
   const id = req.params.id
   request('https://api.seatgeek.com/2/events?performers[home_team]' + '.id=' + id + '&client_id=' + username + '&client_secret=' + password, (error, response, body) => {
@@ -41,6 +55,13 @@ app.post('/favorites', (req, res) => {
   insertGame(game)
     .then((data) => {
       res.status(201).json(data)
+    })
+})
+
+app.get('/favorites', (req, res) => {
+  selectGames()
+    .then((data) => {
+      res.send(filterFavorites(data))
     })
 })
 
