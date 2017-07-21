@@ -59,9 +59,6 @@ app.post('/favorites', (req, res) => {
 })
 
 app.get('/favorites', (req, res) => {
-  const game = req.body
-  console.log(game)
-
   selectGames()
     .then((data) => {
       res.send(filterFavorites(data))

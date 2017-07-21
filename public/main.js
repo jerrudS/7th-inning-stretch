@@ -36,7 +36,6 @@ function fetchFavorites() {
     .then(res => res.json())
     .then(data => {
       favorites = data
-      console.log(favorites)
       renderFavorites()
       renderFavoritesTable(favoritesHeaders)
       renderFavoritesTableData(favorites)
@@ -156,7 +155,6 @@ function renderFavoritesTableData(favorites) {
     const tableRow = document.createElement('tr')
 
     for (let key in object) {
-      console.log(object.date)
       const tableData = document.createElement('td')
       if (key === 'url') {
         const aTag = createATagButton(object.url)
@@ -167,10 +165,10 @@ function renderFavoritesTableData(favorites) {
         const slicedArray = toSlicedArray(rating)
         tableData.textContent = slicedArray
       }
-      // else if (key === 'date') {
-      //   const newestDate = toUtcStringSliced(object.date)
-      //   tableData.textContent = newestDate
-      // }
+      else if (key === 'date') {
+        const newestDate = toUtcStringSliced(object.date)
+        tableData.textContent = newestDate
+      }
       else {
         tableData.textContent = object[key]
       }
