@@ -8,7 +8,7 @@ function fetchTeamData(path) {
     .then(data => {
       games = data
       sortData(games, 'experienceRating')
-      renderTable()
+      renderTable(headerName)
       renderTableData(games)
     })
     .catch(err => {
@@ -113,11 +113,23 @@ function clickEventFavorite(element) {
   })
 }
 
-function mainFavorite() {
-  var $main = document.querySelector('#table')
-  var $table = document.querySelector('#main')
-  $main.classList.add('hidden')
-  $table.classList.add('hidden')
+function mainFavorites() {
+  const $main = document.querySelector('#main')
+  const $table = document.querySelector('#table')
+  $main.classList.remove('ui')
+  $table.classList.remove('ui')
+}
+
+const $favoritesDiv = document.querySelector('#favorites')
+
+function renderFavorites() {
+  const $h2 = document.createElement('h2')
+
+  $h2.setAttribute('class', 'ui header')
+
+  $h2.textContent = 'My Saved Games'
+
+  $favoritesDiv.appendChild($h2)
 }
 
 function renderTableData(games) {
@@ -184,18 +196,21 @@ function renderMain() {
   const mainDiv = document.querySelector('#main')
   const h1 = document.createElement('h1')
   const h3 = document.createElement('h3')
+  const span = document.createElement('span')
   const button = document.createElement('button')
 
   h1.setAttribute('class', 'ui header')
   h3.setAttribute('class', 'ui header')
-  button.setAttribute('class', 'ui right floated button')
+  button.setAttribute('class', 'ui right floated black button')
 
-  h1.textContent = '7th Inning Stretch'
+  span.textContent = '7th Inning Stretch'
   h3.textContent = 'A website for MLB game attendees to find the most optimal game experiences. Just pick a team from the dropdown menu, and your results will be sorted based on "Experience Rating!"'
   button.textContent = 'My Saved Games'
 
   mainDiv.appendChild(h1)
   mainDiv.appendChild(h3)
+  span.appendChild(button)
+  h1.appendChild(span)
 
   const dropdownDiv = document.createElement('div')
   const input = document.createElement('input')
@@ -237,14 +252,54 @@ function renderMain() {
 }
 
 const table = document.createElement('table')
+
+function renderFavoritesTable(headers) {
+  const tableBody = document.createElement('tbody')
+  const tableDiv = document.querySelector('#favorites')
+  const head = document.createElement('thead')
+  const tableRow = document.createElement('tr')
+  headers.forEach(item => {
+    const header = document.createElement('th')
+    header.textContent = ''
+    for (let i = 0; i < 6; i++) {
+      tableRow.appendChild(header)
+    }
+    header.textContent = item
+    if (header.textContent === 'Time of First Pitch') {
+      header.setAttribute('id', 'date')
+      header.setAttribute('data-key', 'date')
+    }
+    else if (header.textContent === 'Lowest Ticket Price ($)') {
+      header.setAttribute('id', 'lowestTicketPrice')
+      header.setAttribute('data-key', 'lowestTicketPrice')
+    }
+    else if (header.textContent === 'Average Ticket Price ($)') {
+      header.setAttribute('id', 'averageTicketPrice')
+      header.setAttribute('data-key', 'averageTicketPrice')
+    }
+    else if (header.textContent === 'Experience Rating') {
+      header.setAttribute('id', 'experienceRating')
+      header.setAttribute('data-key', 'experienceRating')
+    }
+  })
+  table.setAttribute('class', 'ui celled table')
+
+  table.innerHTML = ''
+
+  tableDiv.appendChild(table)
+  table.appendChild(head)
+  table.appendChild(tableBody)
+  head.appendChild(tableRow)
+}
+
 const headerName = ['Save', 'Matchup', 'Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
 
-function renderTable() {
+function renderTable(headers) {
   const tableBody = document.createElement('tbody')
   const tableDiv = document.querySelector('#table')
   const head = document.createElement('thead')
   const tableRow = document.createElement('tr')
-  headerName.forEach(item => {
+  headers.forEach(item => {
     const header = document.createElement('th')
     header.textContent = ''
     for (let i = 0; i < 7; i++) {
@@ -311,4 +366,10 @@ dropdown.addEventListener('click', (event) => {
   }
 })
 
-mainFavorite()
+const mainButton = document.querySelector('.ui.black.button')
+const favoritesHeaders = ['Matchup', 'Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
+mainButton.addEventListener('click', () => {
+  mainFavorites()
+  renderFavorites()
+  renderFavoritesTable(favoritesHeaders)
+})

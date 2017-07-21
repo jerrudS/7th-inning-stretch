@@ -36,3 +36,7 @@ body {
 .hidden {
   display: none;
 }
+
+p {
+  transform: translateX(6%);
+}
