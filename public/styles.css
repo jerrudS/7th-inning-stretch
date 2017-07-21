@@ -37,6 +37,8 @@ body {
   display: none;
 }
 
-p {
-  transform: translateX(6%);
+.ui.black.button {
+  position: absolute;
+  top: 18px;
+  right: 160px;
 }
