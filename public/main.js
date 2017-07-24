@@ -111,21 +111,23 @@ function setAttribute(item, key, arr) {
 }
 
 function clickEventFavorite(element) {
-  element.addEventListener('click', (event) => {
-    const $targetDiv = event.target
-    const id = $targetDiv.getAttribute('data-id')
-    if (id) {
-      const game =
-        {
-          matchup: games[id].matchup,
-          date: games[id].date,
-          experienceRating: games[id].experienceRating,
-          lowestTicketPrice: games[id].lowestTicketPrice,
-          averageTicketPrice: games[id].averageTicketPrice,
-          url: games[id].url
-        }
-      addFavorite(game)
-    }
+  element.forEach(item => {
+    item.addEventListener('click', (event) => {
+      const $targetDiv = event.target
+      const id = $targetDiv.getAttribute('data-id')
+      if (id) {
+        const game =
+          {
+            matchup: games[id].matchup,
+            date: games[id].date,
+            experienceRating: games[id].experienceRating,
+            lowestTicketPrice: games[id].lowestTicketPrice,
+            averageTicketPrice: games[id].averageTicketPrice,
+            url: games[id].url
+          }
+        return addFavorite(game)
+      }
+    })
   })
 }
 
@@ -230,8 +232,9 @@ function renderTableData(games) {
   })
   table.appendChild(tableBody)
 
-  const tbody = document.querySelector('tbody')
-  clickEventFavorite(tbody)
+  const checkbox = document.querySelectorAll('.collapsing')
+  console.log(checkbox)
+  clickEventFavorite(checkbox)
 }
 
 const mlbTeams = ['Arizona Diamondbacks', 'Atlanta Braves', 'Baltimore Orioles', 'Boston Red Sox', 'Chicago Cubs', 'Chicago White Sox', 'Cincinnati Reds', 'Cleveland Indians', 'Colorado Rockies', 'Detroit Tigers', 'Miami Marlins', 'Houston Astros', 'Kansas City Royals', 'Los Angeles Angels of Anaheim', 'Los Angeles Dodgers', 'Milwaukee Brewers', 'Minnesota Twins', 'New York Mets', 'New York Yankees', 'Oakland Athletics', 'Philadelphia Phillies', 'Pittsburgh Pirates', 'St. Louis Cardinals', 'San Diego Padres', 'San Francisco Giants', 'Seattle Mariners', 'Tampa Bay Rays', 'Texas Rangers', 'Toronto Blue Jays', 'Washington Nationals']
