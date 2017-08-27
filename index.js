@@ -65,6 +65,11 @@ app.get('/favorites', (req, res) => {
     })
 })
 
+app.delete('/favorites/:id', (req, res) => {
+  const itemId = parseInt(req.params.id, 10)
+  console.log(itemId)
+})
+
 app.listen(3004, () => {
   console.log('Listening on port 3004')
 })
