@@ -4,7 +4,7 @@ const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
-const { insertGame, selectGames } = require('./database')
+const { insertGame, selectGames, deleteFavorite } = require('./database')
 
 const username = authentication.client_id
 const password = authentication.client_secret
@@ -67,7 +67,9 @@ app.get('/favorites', (req, res) => {
 
 app.delete('/favorites/:id', (req, res) => {
   const itemId = parseInt(req.params.id, 10)
-  console.log(itemId)
+
+  deleteFavorite(itemId)
+    .then(res.sendStatus(204))
 })
 
 app.listen(3004, () => {

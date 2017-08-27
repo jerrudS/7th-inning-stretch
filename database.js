@@ -17,6 +17,12 @@ function insertGame(game) {
     .returning('*')
 }
 
+function deleteFavorite(id) {
+  return knex('games')
+    .where('id', id)
+    .del()
+}
+
 function selectGames() {
   return knex
     .select('*').from('games')
@@ -24,5 +30,6 @@ function selectGames() {
 
 module.exports = {
   insertGame: insertGame,
-  selectGames: selectGames
+  selectGames: selectGames,
+  deleteFavorite: deleteFavorite
 }
