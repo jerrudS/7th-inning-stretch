@@ -66,9 +66,9 @@ function toUtcStringSliced(dateObj) {
 
 function createATagButton(url) {
   const aTag = document.createElement('a')
-  aTag.setAttribute('class', 'ui positive button')
+  aTag.setAttribute('class', 'fluid ui positive button')
   aTag.href = url
-  aTag.textContent = 'Buy Tickets'
+  aTag.textContent = 'Buy'
   return aTag
 }
 
@@ -176,6 +176,16 @@ function renderFavoritesTableData(favorites) {
       }
       tableRow.appendChild(tableData)
     }
+    const deleteColumn = document.createElement('td')
+    const deleteButton = document.createElement('button')
+    const deleteIcon = document.createElement('i')
+
+    deleteIcon.setAttribute('class', 'remove icon')
+    deleteButton.setAttribute('class', 'fluid ui red icon button')
+
+    deleteColumn.appendChild(deleteButton)
+    deleteButton.appendChild(deleteIcon)
+    tableRow.appendChild(deleteColumn)
     tableBody.appendChild(tableRow)
   })
 }
@@ -233,7 +243,6 @@ function renderTableData(games) {
   table.appendChild(tableBody)
 
   const checkbox = document.querySelectorAll('.collapsing')
-  console.log(checkbox)
   clickEventFavorite(checkbox)
 }
 
@@ -310,9 +319,9 @@ function renderFavoritesTable(headers) {
   headers.forEach(item => {
     const header = document.createElement('th')
     header.textContent = ''
-    for (let i = 0; i < 6; i++) {
-      tableRow.appendChild(header)
-    }
+    // for (let i = 0; i < 7; i++) {
+    tableRow.appendChild(header)
+    // }
     header.textContent = item
     if (header.textContent === 'Time of First Pitch') {
       header.setAttribute('id', 'date')
@@ -416,7 +425,7 @@ dropdown.addEventListener('click', (event) => {
 })
 
 const mainButton = document.querySelector('.ui.black.button')
-const favoritesHeaders = ['Matchup', 'Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets']
+const favoritesHeaders = ['Matchup', 'Time of First Pitch', 'Experience Rating', 'Lowest Ticket Price ($)', 'Average Ticket Price ($)', 'Link to Buy Tickets', 'Remove Game']
 mainButton.addEventListener('click', () => {
   mainFavorites()
   fetchFavorites()
