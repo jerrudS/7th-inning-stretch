@@ -36,6 +36,7 @@ function fetchFavorites() {
     .then(res => res.json())
     .then(data => {
       favorites = data
+      console.log(favorites)
       renderFavorites()
       renderFavoritesTable(favoritesHeaders)
       renderFavoritesTableData(favorites)
@@ -43,6 +44,17 @@ function fetchFavorites() {
     .catch(err => {
       console.log('ERROR', err)
     })
+}
+
+function deleteFavorite(element) {
+  element.forEach(item => {
+    item.addEventListener('click', (event) => {
+      console.log(event)
+      const $targetDiv = event.target
+      // const id = $targetDiv.getAttribute('data-id')
+      console.log($targetDiv)
+    })
+  })
 }
 
 function toSlicedArray(number) {
@@ -182,12 +194,15 @@ function renderFavoritesTableData(favorites) {
 
     deleteIcon.setAttribute('class', 'remove icon')
     deleteButton.setAttribute('class', 'fluid ui red icon button')
+    deleteButton.setAttribute('id', 'deleteFavorite')
 
     deleteColumn.appendChild(deleteButton)
     deleteButton.appendChild(deleteIcon)
     tableRow.appendChild(deleteColumn)
     tableBody.appendChild(tableRow)
   })
+  const deleteButton = document.querySelectorAll('#deleteFavorite')
+  deleteFavorite(deleteButton)
 }
 
 function renderTableData(games) {
@@ -319,9 +334,9 @@ function renderFavoritesTable(headers) {
   headers.forEach(item => {
     const header = document.createElement('th')
     header.textContent = ''
-    // for (let i = 0; i < 7; i++) {
+
     tableRow.appendChild(header)
-    // }
+
     header.textContent = item
     if (header.textContent === 'Time of First Pitch') {
       header.setAttribute('id', 'date')
